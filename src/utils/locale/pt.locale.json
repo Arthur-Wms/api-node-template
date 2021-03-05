@@ -1,0 +1,8 @@
+{
+  "SUCCESS": "Requisição feita com sucesso.",
+  "ERR": "Falha ao realizar requisição.",
+  "USR_CRE": "Usuário criado com sucesso.",
+  "USR_BCR": "Falha ao realizar login, credenciais inválidas.",
+  "NOT_FOUND": "Não encontrado na base de dados.",
+  "NOT_AUTH": "Não authorizado."
+}

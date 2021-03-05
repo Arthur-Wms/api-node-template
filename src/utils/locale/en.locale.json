@@ -1,0 +1,8 @@
+{
+  "SUCCESS": "Request success.",
+  "ERR": "Request failed.",
+  "USR_CRE": "User created successfully.",
+  "USR_BCR": "Bad credentials.",
+  "NOT_FOUND": "Not found in datbase.",
+  "NOT_AUTH": "Not authorized."
+}
