@@ -22,4 +22,12 @@ module.exports = {
         .catch(reject => res.status(reject.status_code || 400).json(reject.response));
   },
 
+  async validateEmail(req, res) {
+    const token = req.query.t;
+
+    return await service.validateEmail({token})
+        .then(resolve => res.status(resolve.status_code || 200).json(resolve.response))
+        .catch(reject => res.status(reject.status_code || 400).json(reject.response));
+  },
+
 };

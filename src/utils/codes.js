@@ -4,5 +4,6 @@ module.exports = Object.freeze({
   USR_CRE: "USR_CRE", // User created
   USR_BCR: "USR_BCD", // Bad credentials
   NOT_FOUND: "NOTFOUND", // Bad credentials
-  NOT_AUTH: "NOT_AUTH" // Not Authorized
+  NOT_AUTH: "NOT_AUTH", // Not Authorized
+  EMA_VLD: "EMA_VLD" // Email Validated
 });

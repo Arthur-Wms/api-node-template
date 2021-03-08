@@ -1,10 +1,10 @@
 const User = require('../models/User');
 const emailService = require('./email-service');
-const registerEmail = require('../../utils/mails/register-email');
+const registerEmail = require('../../utils/mails/validate-email');
 const {JWT_SECRET_SECONDARY} = require('../../config/env.config');
 
-const {default_language, buildSuccessResponse, buildErrorResponse, buildMessage, comparePass, generateToken} = require('../../utils');
-const {USR_CRE, USR_BCR, NOT_FOUND} = require('../../utils/codes');
+const {default_language, buildSuccessResponse, buildErrorResponse, buildMessage, comparePass, generateToken, verifyToken} = require('../../utils');
+const {USR_CRE, USR_BCR, NOT_FOUND, EMA_VLD, NOT_AUTH} = require('../../utils/codes');
 
 module.exports = {
   async createUser(body, options = defOptions) {
@@ -104,6 +104,31 @@ module.exports = {
         });
 
         return resolve(response);
+      } catch (err) {
+        const response = buildErrorResponse({
+          log: err.message,
+        });
+        return reject(response);
+      }
+    });
+  },
+
+  async validateEmail(body, options = defOptions) {
+    return await new Promise(async (resolve, reject) => {
+      try {
+        await verifyToken(body.token, JWT_SECRET_SECONDARY)
+            .then(async decoded => {
+              const user = await User.updateOne({_id: decoded.sub}, {$set: {validatedEmail: true}});
+
+              // Response
+              const response = buildSuccessResponse({
+                code: EMA_VLD,
+                language: options.language,
+                body: user
+              });
+
+              return resolve(response);
+            })
       } catch (err) {
         const response = buildErrorResponse({
           log: err.message,
