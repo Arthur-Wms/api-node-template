@@ -11,6 +11,6 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(routes);
 
-const server = app.listen(process.env.PORT || 4000, () => {
+const server = app.listen(process.env.SERVER_PORT || 4000, () => {
   console.log('Server started on ' + server.address().port);
 });
