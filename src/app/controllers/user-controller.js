@@ -13,6 +13,15 @@ module.exports = {
         .catch(reject => res.status(reject.status_code || 400).json(reject.response));
   },
 
+  async googleAuth(req, res) {
+    // Token
+    const token = res.locals['token'];
+
+    return await service.googleAuth(token)
+        .then(resolve => res.status(resolve.code || 200).json(resolve.response))
+        .catch(reject => res.status(reject.code || 400).json(reject.response));
+  },
+
   async loadSession(req, res) {
     // User
     const user = res.locals['User'];

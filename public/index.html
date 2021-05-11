@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+    <meta name="google-signin-scope" content="profile email">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+          content="416605805616-6uavg1ud180ufbg41ho55sagn9u4l51m.apps.googleusercontent.com">
+</head>
+<body>
+<div id="app">
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut()">Sign out</a>
+</div>
+</body>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const app = new Vue({
+    el: "#app",
+    data: {},
+    methods: {},
+  });
+
+  function onSignIn(googleUser) {
+    const id_token = googleUser.getAuthResponse().id_token;
+
+    const url = "http://localhost:4000/auth/google";
+    const body = {token: id_token};
+
+    // Request
+    axios.post(url, body)
+        .then(res => {
+          //console.log(res.data);
+        }).catch(err => console.log(err.response.data));
+
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+  }
+
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
+
+</html>

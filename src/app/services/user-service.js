@@ -3,8 +3,22 @@ const emailService = require('./email-service');
 const registerEmail = require('../../utils/mails/validate-email');
 const {JWT_SECRET_SECONDARY} = require('../../config/env.config');
 
-const {default_language, buildSuccessResponse, buildErrorResponse, buildMessage, comparePass, generateToken, verifyToken} = require('../../utils');
-const {USR_CRE, USR_BCR, NOT_FOUND, EMA_VLD, NOT_AUTH} = require('../../utils/codes');
+const auth = require('../../config/auth.config');
+
+const {OAuth2Client} = require('google-auth-library');
+const googleClient = new OAuth2Client(auth.googleAuth.clientID, auth.googleAuth.clientSecret, auth.googleAuth.callbackURL);
+
+const {
+  default_language,
+  available_languages,
+  buildSuccessResponse,
+  buildErrorResponse,
+  buildMessage,
+  comparePass,
+  generateToken,
+  verifyToken
+} = require('../../utils');
+const {USR_CRE, USR_BCR, NOT_FOUND, EMA_VLD, SUCCESS, ERR} = require('../../utils/codes');
 
 module.exports = {
   async createUser(body, options = defOptions) {
@@ -78,6 +92,53 @@ module.exports = {
           log: err.message,
         });
         return reject(response);
+      }
+    });
+  },
+
+  async googleAuth(token, options = {}) {
+    return await new Promise(async (resolve, reject) => {
+      try {
+        await googleClient.verifyIdToken({
+          idToken: token,
+        }).then(async ticket => {
+          const payload = ticket.getPayload();
+
+          // User
+          let user = await User.findOne({email: payload.email});
+
+          // Create User
+          if (!user)
+            user = await User.create({
+              email: payload.email,
+              firstName: payload.given_name,
+              lastName: payload.family_name,
+              image: payload.picture,
+              validatedEmail: true,
+              language: available_languages.includes(payload.locale.substring(0, 2)) ?
+                  payload.locale.substring(0, 2) : default_language
+            });
+
+          // Token
+          const accessToken = generateToken({sub: user._id});
+
+          // Response Body
+          const responseBody = {
+            token: accessToken,
+            user: user
+          }
+
+          return resolve(buildSuccessResponse({
+            message: buildMessage(SUCCESS, options.language),
+            body: responseBody,
+          }));
+        });
+      } catch (err) {
+        console.log(err.message);
+        return reject(buildErrorResponse({
+          message: buildMessage(ERR, options.language),
+          log: err.message
+        }))
       }
     });
   },

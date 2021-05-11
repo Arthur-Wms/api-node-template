@@ -85,6 +85,22 @@ module.exports = {
     next();
   },
 
+  googleAuth(req, res, next) {
+    const schema = Joi.object({
+      token: Joi.string().required(),
+    });
+
+    const {error} = schema.validate(req.body);
+
+    // Error
+    if (error) return sendError(res, error)
+
+    // Token
+    res.locals['token'] = req.body.token;
+
+    next();
+  },
+
 
 }
 

@@ -9,4 +9,7 @@ module.exports = {
   JWT_EXP: process.env.JWT_EXP || '10m',
   EMAIL_USER: process.env.EMAIL_USER || 'teste@email.com',
   EMAIL_PASS: process.env.EMAIL_PASS || '#Pass123',
+  AUTH_GOOGLE_CLIENT_ID: process.env.AUTH_GOOGLE_CLIENT_ID || '',
+  AUTH_GOOGLE_CLIENT_SECRET: process.env.AUTH_GOOGLE_CLIENT_SECRET || '',
+  AUTH_GOOGLE_CALLBACK_URL: process.env.AUTH_GOOGLE_CALBACK_URL || '',
 }
