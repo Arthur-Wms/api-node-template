@@ -161,7 +161,10 @@ module.exports = {
         // Response
         const response = buildSuccessResponse({
           token: accessToken,
-          body: user,
+          body: {
+            user: user,
+            token: accessToken
+          },
         });
 
         return resolve(response);
